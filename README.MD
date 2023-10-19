@@ -1,6 +1,7 @@
 # TedEval: A Fair Evaluation Metric for Scene Text Detectors
 
-Official Python 3 implementation of TedEval | [paper](https://arxiv.org/abs/1907.01227) | [slides](https://docs.google.com/presentation/d/1EFK_WjpdLExZVDPt4C7yCcxjpXNvIyAOL9zUnKx1VoY/edit?usp=sharing)
+Official Python 3 implementation of
+TedEval | [paper](https://arxiv.org/abs/1907.01227) | [slides](https://docs.google.com/presentation/d/1EFK_WjpdLExZVDPt4C7yCcxjpXNvIyAOL9zUnKx1VoY/edit?usp=sharing)
 
 **[Chae Young Lee](mailto:cylee7133@gmail.com), Youngmin Baek, and Hwalsuk Lee.**
 
@@ -8,36 +9,40 @@ Clova AI Research, NAVER Corp.
 
 ### Overview
 
-We propose a new evaluation metric for scene text detectors called TedEval. Through separate instance-level matching policy and character-level scoring policy, TedEval solves the drawbacks of previous metrics such as IoU and DetEval. This code is based on [ICDAR15 official evaluation code](http://rrc.cvc.uab.es/).
+We propose a new evaluation metric for scene text detectors called TedEval. Through separate instance-level matching
+policy and character-level scoring policy, TedEval solves the drawbacks of previous metrics such as IoU and DetEval.
+This code is based on [ICDAR15 official evaluation code](http://rrc.cvc.uab.es/).
 
 ## Methodology
 
-### 1. Mathcing Policy
+### 1. Matching Policy
 
 - Non-exclusively gathers all possible matches of not only one-to-one but also one-to-many and many-to-one.
 - The threshold of both area recall and area precision are set to 0.4.
-- Multiline is identified and rejected when _|min(theta, 180 - theta)| > 45_ from Fig. 2.
+- Multiline is identified and rejected when _|min(theta, 180 – theta)| > 45_ from Fig. 2.
 
-<p align="center"><img height=200 src=images/multiline.png>
+<p align="center"><img height=200 src=images/multiline.png alt="Multiline">
 
 ### 2. Scoring Policy
 
-We compute Pseudo Character Center (PCC) from word-level bounding boxes and penalize matches when PCCs are missing or overlapping.
+We compute Pseudo Character Center (PCC) from word-level bounding boxes and penalize matches when PCCs are missing or
+overlapping.
 
-<p align="center"><img height=170 src=images/pcc.png>
+<p align="center"><img height=170 src=images/pcc.png alt="PCC">
 
 ### Sample Evaluation
 
-<img src='images/sample.png'>
+<img src='images/sample.png' alt="Sample">
 
 ## Experiments
 
-We evaluated state-of-the-art scene text detectors with TedEval on two benchmark datasets: ICDAR 2013 Focused Scene Text (IC13) and ICDAR 2015 Incidental Scene Text (IC15). Detectors are listed in the order of published dates.
+We evaluated state-of-the-art scene text detectors with TedEval on two benchmark datasets: ICDAR 2013 Focused Scene
+Text (IC13) and ICDAR 2015 Incidental Scene Text (IC15). Detectors are listed in the order of published dates.
 
 ### ICDAR 2013
 
 |                        Detector                         | Date (YY/MM/DD) | Recall (%) | Precision (%) | H-mean (%) |
-| :-----------------------------------------------------: | :-------------: | :--------: | :-----------: | :--------: |
+|:-------------------------------------------------------:|:---------------:|:----------:|:-------------:|:----------:|
 |      [CTPN](https://arxiv.org/pdf/1609.03605.pdf)       |    16/09/12     |    82.1    |     92.7      |    87.6    |
 |      [RRPN](https://arxiv.org/pdf/1703.01086.pdf)       |    17/03/03     |    89.0    |     94.2      |    91.6    |
 |     [SegLink](https://arxiv.org/pdf/1703.06520.pdf)     |    17/03/19     |    65.6    |     74.9      |    70.0    |
@@ -53,7 +58,7 @@ We evaluated state-of-the-art scene text detectors with TedEval on two benchmark
 ### ICDAR 2015
 
 |                        Detector                         | Date (YY/MM/DD) | Recall (%) | Precision (%) | H-mean (%) |
-| :-----------------------------------------------------: | :-------------: | :--------: | :-----------: | :--------: |
+|:-------------------------------------------------------:|:---------------:|:----------:|:-------------:|:----------:|
 |      [CTPN](https://arxiv.org/pdf/1609.03605.pdf)       |    16/09/12     |    85.0    |     81.1      |    67.8    |
 |      [RRPN](https://arxiv.org/pdf/1703.01086.pdf)       |    17/03/03     |    79.5    |     85.9      |    82.6    |
 |     [SegLink](https://arxiv.org/pdf/1703.06520.pdf)     |    17/03/19     |    77.1    |     83.9      |    80.6    |
@@ -68,7 +73,7 @@ We evaluated state-of-the-art scene text detectors with TedEval on two benchmark
 
 ### Frequency
 
-<img src='images/counts.png'>
+<img src='images/counts.png' alt="Counts">
 
 ## Getting Started
 
@@ -81,9 +86,8 @@ We evaluated state-of-the-art scene text detectors with TedEval on two benchmark
 - python 3
 - python 3.x Polygon, Bottle, Pillow
 
-```python3
-# install
-pip3 install Polygon3 bottle Pillow
+```bash
+pip install Polygon3 bottle Pillow
 ```
 
 ### Supported Annotation Type
@@ -95,7 +99,9 @@ pip3 install Polygon3 bottle Pillow
 
 ### Prepare data
 
-The ground truth and the result data should be text files, one for each sample. Note that the default naming rule of each text file is that there must be `img_{number}` in the filename and that the number indicate the image sample (this can be changed in `default_evaluation_params()` in `script.py`).
+The ground truth and the result data should be text files, one for each sample. Note that the default naming rule of
+each text file is that there must be `img_{number}` in the filename and that the number indicate the image sample (this
+can be changed in `default_evaluation_params()` in `script.py`).
 
 ```
 # gt/gt_img_38.txt
@@ -115,7 +121,7 @@ The ground truth and the result data should be text files, one for each sample. 
 
 Compress these text files without the parent directory.
 
-```python3
+```bash
 zip gt.zip gt/*
 zip result.zip result/*
 ```
@@ -124,7 +130,7 @@ Refer to `gt/result.zip` and `gt/gt_*.zip` for examples.
 
 ### Run stand-alone evaluation
 
-```python3
+```bash
 python script.py –g=gt/gt.zip –s=result/result.zip
 ```
 
@@ -133,7 +139,7 @@ For evaluation setup, please refer to the following parameter list to edit `defa
 ### Important Parameters
 
 <!--
-### Paramters for evaluation script
+### Parameters for the evaluation script
 | name | type | default | description |
 | ---- | ---- | ------- | ---- |
 | -g | ```string``` | | path to ground truth zip file |
@@ -141,7 +147,7 @@ For evaluation setup, please refer to the following parameter list to edit `defa
 | -o | ```string``` | | path to save per-sample result file 'results.zip' | -->
 
 | name                      | type      | default | description                                                   |
-| ------------------------- | --------- | ------- | ------------------------------------------------------------- |
+|---------------------------|-----------|---------|---------------------------------------------------------------|
 | AREA_RECALL_CONSTRAINT    | `float`   | `0.4`   | area recall constraint (0 <= R <= 1)                          |
 | AREA_PRECISION_CONSTRAINT | `float`   | `0.4`   | area precision constraint (0 <= P <= 1)                       |
 | GT_LTRB                   | `boolean` | `False` | GT file annotation type (True if LTRB, False if QUAD)         |
@@ -149,14 +155,14 @@ For evaluation setup, please refer to the following parameter list to edit `defa
 | TRANSCRIPTION             | `boolean` | `False` | set True if result file has transcription                     |
 | CONFIDENCES               | `boolean` | `False` | set True if result file has confidence                        |
 
-
 ### Run Visualizer
 
-```python3
+```bash
 python web.py
 ```
 
-- Place the zip file of images and GTs of the dataset named `images.zip` and `gt.zip`, respectively, in the `gt` directory.
+- Place the zip file of images and GTs of the dataset named `images.zip` and `gt.zip`, respectively, in the `gt`
+  directory.
 - Create an empty directory name `output`. This is where the DB, submission files, and result files will be created.
 - You can change the host and port number in the final line of `web.py`.
 
@@ -174,7 +180,7 @@ The file structure should then be:
 └── ...
 ```
 
-<img src='images/visualizer.png'>
+<img src='images/visualizer.png' alt="Visualizer">
 
 ## Citation
 
@@ -189,7 +195,8 @@ The file structure should then be:
 
 ## Contact us
 
-We welcome any feedbacks to our metric. Please contact the authors via `{cylee7133, youngmin.baek, hwalsuk.lee}@gmail.com`. In case of code errors, open an issue and we will get to you.
+We welcome any feedback to our metric. Please contact the authors
+via `{cylee7133, youngmin.baek, hwalsuk.lee}@gmail.com`. In case of code errors, open an issue, and we will get to you.
 
 ## License
 
