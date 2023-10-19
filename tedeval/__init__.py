@@ -1,1 +1,2 @@
-from tedeval.script import evaluate_method
+from tedeval.evaluate_fiftyone import evaluate_text_detections_fiftyone
+from tedeval.evaluate_zip import evaluate_text_detections_zip
