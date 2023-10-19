@@ -48,6 +48,12 @@ def evaluate_text_detections_zip(
                             gt_char_counts[gt_num][det_num][gt_char_num] = 1
 
     def one_to_one_match(row: int, col: int) -> bool:
+        if not (
+            recall_mat[row, col] >= evaluation_params["AREA_RECALL_CONSTRAINT"]
+            and precision_mat[row, col] >= evaluation_params["AREA_PRECISION_CONSTRAINT"]
+        ):
+            return False
+
         cont = 0
         for j in range(len(recall_mat[0])):
             if (
@@ -67,10 +73,7 @@ def evaluate_text_detections_zip(
         if cont != 1:
             return False
 
-        return (
-            recall_mat[row, col] >= evaluation_params["AREA_RECALL_CONSTRAINT"]
-            and precision_mat[row, col] >= evaluation_params["AREA_PRECISION_CONSTRAINT"]
-        )
+        return True
 
     def one_to_many_match(gt_num: int) -> tuple[bool, list[int]]:
         many_sum = 0
