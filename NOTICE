@@ -1,12 +1,12 @@
 TedEval
 Copyright (c) 2019-present NAVER Corp.
 
-This project contains subcomponents with separate copyright notices and license terms. 
+This project contains subcomponents with separate copyright notices and license terms.
 Your use of the source code for these subcomponents is subject to the terms and conditions of the following licenses.
 
 =====================
 
-TedEval solves the drawbacks of previous metrics such as IoU and DetEval. 
+TedEval solves the drawbacks of previous metrics such as IoU and DetEval.
 This code is based on ICDAR15 official evaluation code from https://rrc.cvc.uab.es/.
 
 =====================
