@@ -38,7 +38,9 @@ jQuery.fn.extend({
 
 jQuery.event.mousewheel = {
 	giveFocus: function(el, up, down, preventDefault) {
-		if (el._handleMousewheel) jQuery(el).unmousewheel();
+		if (el._handleMousewheel) {
+    jQuery(el).unmousewheel();
+  }
 
 		if (preventDefault == window.undefined && down && down.constructor != Function) {
 			preventDefault = down;
@@ -46,33 +48,46 @@ jQuery.event.mousewheel = {
 		}
 
 		el._handleMousewheel = function(event) {
-			if (!event) event = window.event;
-			if (preventDefault)
-				if (event.preventDefault) event.preventDefault();
-				else event.returnValue = false;
+			if (!event) {
+     event = window.event;
+   }
+			if (preventDefault) {
+     if (event.preventDefault) {
+       event.preventDefault();
+     } else {
+       event.returnValue = false;
+     }
+   }
 			var delta = 0;
 			if (event.wheelDelta) {
 				delta = event.wheelDelta/120;
-				if (window.opera) delta = -delta;
+				if (window.opera) {
+      delta = -delta;
+    }
 			} else if (event.detail) {
 				delta = -event.detail/3;
 			}
-			if (up && (delta > 0 || !down))
-				up.apply(el, [event, delta]);
-			else if (down && delta < 0)
-				down.apply(el, [event, delta]);
+			if (up && (delta > 0 || !down)) {
+     up.apply(el, [event, delta]);
+   } else if (down && delta < 0) {
+            down.apply(el, [event, delta]);
+          }
 		};
 
-		if (window.addEventListener)
-			window.addEventListener('DOMMouseScroll', el._handleMousewheel, false);
+		if (window.addEventListener) {
+    window.addEventListener('DOMMouseScroll', el._handleMousewheel, false);
+  }
 		window.onmousewheel = document.onmousewheel = el._handleMousewheel;
 	},
 
 	removeFocus: function(el) {
-		if (!el._handleMousewheel) return;
+		if (!el._handleMousewheel) {
+    return;
+  }
 
-		if (window.removeEventListener)
-			window.removeEventListener('DOMMouseScroll', el._handleMousewheel, false);
+		if (window.removeEventListener) {
+    window.removeEventListener('DOMMouseScroll', el._handleMousewheel, false);
+  }
 		window.onmousewheel = document.onmousewheel = null;
 		el._handleMousewheel = null;
 	}

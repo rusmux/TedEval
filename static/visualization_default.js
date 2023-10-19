@@ -183,14 +183,18 @@ var ClassVisualization = function(){
         if ( this.curr_im_w < this.canvas_gt.width){
             this.offset_x = (this.canvas_gt.width - this.curr_im_w)/2;
         }else{
-            if (this.offset_x>0) this.offset_x= 0;
-            if (this.offset_x < (this.canvas_gt.width - this.curr_im_w)) this.offset_x = this.canvas_gt.width - this.curr_im_w ;
+            this.offset_x = Math.min(this.offset_x, 0);
+            if (this.offset_x < (this.canvas_gt.width - this.curr_im_w)) {
+              this.offset_x = this.canvas_gt.width - this.curr_im_w ;
+            }
         }
         if (this.curr_im_h < this.canvas_gt.height){
             this.offset_y = ( this.canvas_gt.height - this.curr_im_h)/2;
         }else{
-            if (this.offset_y>0) this.offset_y = 0;
-            if (this.offset_y< (this.canvas_gt.height-this.curr_im_h)) this.offset_y = this.canvas_gt.height - this.curr_im_h ;
+            this.offset_y = Math.min(this.offset_y, 0);
+            if (this.offset_y< (this.canvas_gt.height-this.curr_im_h)) {
+              this.offset_y = this.canvas_gt.height - this.curr_im_h ;
+            }
         }
     };
 
@@ -220,14 +224,18 @@ var ClassVisualization = function(){
         if ( this.curr_im_w < this.canvas_gt.width){
             ox = (this.canvas_gt.width - this.curr_im_w)/2;
         }else{
-            if (ox>0) ox = 0;
-            if (ox< (this.canvas_gt.width - this.curr_im_w)) ox = this.canvas_gt.width - this.curr_im_w ;
+            ox = Math.min(ox, 0);
+            if (ox< (this.canvas_gt.width - this.curr_im_w)) {
+              ox = this.canvas_gt.width - this.curr_im_w ;
+            }
         }
         if (this.curr_im_h < this.canvas_gt.height){
             oy = (this.canvas_gt.height - this.curr_im_h)/2;
         }else{
-            if (oy>0) oy = 0;
-            if (oy< (this.canvas_gt.height - this.curr_im_h)) oy = this.canvas_gt.height - this.curr_im_h ;
+            oy = Math.min(oy, 0);
+            if (oy< (this.canvas_gt.height - this.curr_im_h)) {
+              oy = this.canvas_gt.height - this.curr_im_h ;
+            }
         }
         return Array(ox,oy);
     };
@@ -303,9 +311,7 @@ var ClassVisualization = function(){
         var width = Math.round(this.original_to_zoom_val(parseInt( Math.min(TR.x,BR.x) )+1) - this.original_to_zoom_val(parseInt(Math.max(TL.x,BL.x)))) - 3;
 
         var fontSize = height;
-        if(fontSize<6){
-            fontSize=6;
-        }
+        fontSize = Math.max(fontSize, 6)
 
         ctx.fillStyle = "rgba(255,255,255,1)";
         ctx.font= fontSize + "px Verdana";

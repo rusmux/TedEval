@@ -53,16 +53,16 @@ ClassVisualization.prototype.load_visualization = function(){
     var html_recall = "";
     var html_precision = "";
 
-        var stylesMat = new Array();
+        var stylesMat = [];
         for ( var j=0;j<numGt;j++){
-            stylesMat[j] = new Array();
+            stylesMat[j] = [];
             for ( var i=0;i<numDet;i++){
                 stylesMat[j][i] = "value";
             }
         }
 
-        sampleData.gtTypes = new Array();
-        sampleData.detTypes = new Array();
+        sampleData.gtTypes = [];
+        sampleData.detTypes = [];
         for ( var j=0;j<numGt;j++){
             var gtDontCare = $.inArray(j,sampleData.gtDontCare)>-1;
             sampleData.gtTypes.push( gtDontCare? 'DC' : 'NM' );
@@ -77,8 +77,8 @@ ClassVisualization.prototype.load_visualization = function(){
             for ( var k=0;k<sampleData.pairs.length;k++){
                 var pair = sampleData.pairs[k];
 
-                var gts = new Array();
-                var dets = new Array();
+                var gts = [];
+                var dets = [];
 
                 if(pair.gt.length==undefined){
                     gts.push(pair.gt);
@@ -288,19 +288,18 @@ ClassVisualization.prototype.draw = function(){
     }
 
 
-    if (this.sampleData==null){
-        this.ctx_gt.fillStyle = "rgba(255,0,0,1)";
-        this.ctx_gt.font= "12px Verdana";
-        this.ctx_gt.fillText("Loading method..", 20,60);
-        this.ctx_det.fillStyle = "rgba(255,0,0,1)";
-        this.ctx_det.font= "12px Verdana";
-        this.ctx_det.fillText("Loading method..", 20,60);
-        return;
-    }else{
-         if (this.sampleData.gtPolPoints==undefined){
-             this.sampleData.gtPolPoints = [];
-         }
-    }
+    if (this.sampleData==null) {
+            this.ctx_gt.fillStyle = "rgba(255,0,0,1)";
+            this.ctx_gt.font= "12px Verdana";
+            this.ctx_gt.fillText("Loading method..", 20,60);
+            this.ctx_det.fillStyle = "rgba(255,0,0,1)";
+            this.ctx_det.font= "12px Verdana";
+            this.ctx_det.fillText("Loading method..", 20,60);
+            return;
+        }
+    else if (this.sampleData.gtPolPoints==undefined) {
+                 this.sampleData.gtPolPoints = [];
+             }
 
     for (var i=0;i<this.sampleData.gtPolPoints.length;i++){
 
