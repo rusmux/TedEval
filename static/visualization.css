@@ -43,12 +43,12 @@ div.method_info.small{
 
 h2.method{
     background-color: #d8d8d8;
-    
+
     padding-top: 8px;
     padding-bottom: 8px;
     border-bottom: 1px solid #999;
     padding-left: 10px;
-    
+
     margin: 0px;
 }
 div.method_info span.method{
@@ -95,8 +95,8 @@ div.method_info.small #div_summary{
 div.method_info.small h2.method{
     box-shadow:none;
     font-size: 10pt;
-    
-    
+
+
 }
 div.method_info.small h2.method a{
     color: #2694E8;

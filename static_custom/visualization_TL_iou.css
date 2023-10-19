@@ -3,14 +3,14 @@
     left: 0px;
     right: 0px;
     top: 30px;
-    bottom: 0px;    
+    bottom: 0px;
 }
 #div_canvas_det{
     position: absolute;
     left: 0px;
     right: 0px;
     top: 30px;
-    bottom: 0px; 
+    bottom: 0px;
 }
 
 div.container_canvas{
@@ -18,7 +18,7 @@ div.container_canvas{
     vertical-align: top;
     position: relative;
     height: 400px;
-    display: inline-block;  
+    display: inline-block;
     border: 1px solid #999;
     box-sizing: border-box;
 }

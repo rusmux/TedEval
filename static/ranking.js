@@ -23,7 +23,7 @@ var ranking_task_graphic_options_default = {
 };
 
 function delete_methods(){
-    
+
     if(!confirm("Are you sure to delete all methods?")){
         return;
     }
@@ -44,7 +44,7 @@ function delete_method(id){
 }
 
 function edit_method(id,el){
-    
+
     var current_name = $(el).closest("tr").find("span.title").text();
     var name = prompt("Enter the method's name", current_name);
     if (name != null) {
@@ -126,11 +126,11 @@ $(document).ready( function(){
             show_current_graphic();
         });
     }
-    
+
     if ($("#div_ranking_1").length){
         show_current_graphic();
     }
-    
+
     function show_current_graphic(){
         if(!loaded){
             init_graphic();
@@ -142,10 +142,10 @@ $(document).ready( function(){
         var ordenacio = $("#" + id_data + "-sort").val();
         var format = $("#" + id_data + "-format").val();
         var type = $("#" + id_data + "-type").val();
-        
+
         var dades = google.visualization.arrayToDataTable(dadesArray);
         var width = $(window).width() - $("table.results").width()-40;
-        
+
         if (width<$(window).width()/2){
             width = $(window).width() - 20;
             $("#div_rankings").removeClass("ib");
@@ -156,7 +156,7 @@ $(document).ready( function(){
             width = width/2 -10;
         }
         var height = $(window).height() - 320;
-        
+
         var options = jQuery.extend(true, {}, ranking_task_graphic_options_default);
         options.animation.duration= 300;
         options.width= width;
@@ -171,7 +171,7 @@ $(document).ready( function(){
         }
 
         grafic_1.draw(dades,options);
-        
+
         if(grafic_2!=null){
             var ordenacio = $("#" + id_data + "-gr2-sort").val();
             var format = $("#" + id_data + "-gr2-format").val();
@@ -192,7 +192,7 @@ $(document).ready( function(){
             var dades = google.visualization.arrayToDataTable(dadesArray);
             options.vAxis.title = ordenacio;
             grafic_2.draw(dades,options);
-        }        
+        }
 
     }
 

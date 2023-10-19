@@ -1,7 +1,7 @@
 /* global web */
 var ClassVisualization = function(){
     this.sampleData = null;
-    
+
     //Parameters for GT/Det Canvas visualization
     this.canvas_gt = null;
     this.canvas_det = null;
@@ -17,23 +17,23 @@ var ClassVisualization = function(){
     this.det_rect=-1;
     this.gt_rect=-1;
     this.draws=0;
-    
+
     //Mouse events on canvas
     this.mm_point=null;
     this.initial_point=null;
     this.last_point=null;
     this.mouse_clicked=false;
     this.initial_offset=null;
-    
+
     this.image_loaded = false;
     this.image_details_loaded=false;
-    this.sampleData = null;    
-    
+    this.sampleData = null;
+
     var self = this;
-    
+
     this.load_sample_info = function(){
         //web.pantalla_espera();
-        
+
         var urlInfo = "/sampleInfo/?m=" + getUrlParameter("m");
         var extraParmasNames = ["file","eval","sample","gtv"];
         for(var i=0;i<extraParmasNames.length;i++){
@@ -47,7 +47,7 @@ var ClassVisualization = function(){
             visualization.load_visualization();
         }, "json");
     };
-    
+
     this.init_image_details = function(){
         this.canvas_gt = document.createElement("canvas");
         var dest = document.getElementById("div_canvas_gt");
@@ -66,7 +66,7 @@ var ClassVisualization = function(){
         this.canvas_det.height=$("#div_canvas_gt").height();
 
         var self = this;
-        
+
         $("#canvas_gt").mousedown(function(e) {self.mousedown(e);});
         $("#canvas_gt").mousemove(function(e) {self.mousemove(e);});
         $("#canvas_gt").mouseup(function(e) {self.mouseup(e);});
@@ -106,12 +106,12 @@ var ClassVisualization = function(){
         this.ctx_det.webkitImageSmoothingEnabled = false;
         $("#div_container_method").css({"height": ($(window).height()-80)+ "px"});
 
-        this.table_sizes();      
+        this.table_sizes();
         this.zoom_changed();
         this.correct_image_offset();
         this.draw();
     };
-    
+
     this.mousemove = function(e){
         var layer = this.getOffset(e);
         this.mm_point = Array(layer.x,layer.y);
@@ -128,13 +128,13 @@ var ClassVisualization = function(){
         this.mouse_clicked = true;
         this.refresh_canvas_position_on_mousemove();
     };
-    this.mouseup = function(e){    
+    this.mouseup = function(e){
         this.mouse_clicked = false;
     };
     this.mouseleave = function(e){
         this.mouse_clicked = false;
     };
-    this.mousewheel = function(e,d){        
+    this.mousewheel = function(e,d){
          var new_scale = this.scale + ((d>0)? this.scale*0.1 : -this.scale*0.1);
 
         var point = this.mm_point;
@@ -178,7 +178,7 @@ var ClassVisualization = function(){
         this.curr_im_h = this.im_h * this.scale;
 
     };
-    this.correct_image_offset = function(){    
+    this.correct_image_offset = function(){
         //Ensure that image position is correct and center image
         if ( this.curr_im_w < this.canvas_gt.width){
             this.offset_x = (this.canvas_gt.width - this.curr_im_w)/2;
@@ -193,8 +193,8 @@ var ClassVisualization = function(){
             if (this.offset_y< (this.canvas_gt.height-this.curr_im_h)) this.offset_y = this.canvas_gt.height - this.curr_im_h ;
         }
     };
-    
-    this.refresh_canvas_position_on_mousemove = function(){    
+
+    this.refresh_canvas_position_on_mousemove = function(){
        var dx = self.mm_point[0]-self.initial_point[0];
        var dy = self.mm_point[1]-self.initial_point[1];
 
@@ -215,7 +215,7 @@ var ClassVisualization = function(){
            setTimeout(self.refresh_canvas_position_on_mousemove,100);
        }
     };
-    this.correct_offset = function(ox,oy){    
+    this.correct_offset = function(ox,oy){
         //Ensure that image position is correct and center image
         if ( this.curr_im_w < this.canvas_gt.width){
             ox = (this.canvas_gt.width - this.curr_im_w)/2;
@@ -231,7 +231,7 @@ var ClassVisualization = function(){
         }
         return Array(ox,oy);
     };
-    this.getOffset = function(evt){      
+    this.getOffset = function(evt){
       var el = evt.target,
           x = y = 0;
 
@@ -246,20 +246,20 @@ var ClassVisualization = function(){
 
       return {x: x, y: y};
     };
-    
-   
+
+
     this.table_sizes = function(){
         $(".div_table").scroll(function(e){
             var pos_y = $(this).scrollTop();
             var pos_x = $(this).scrollLeft();
             $(".div_table").not(this).scrollTop(pos_y).scrollLeft(pos_x);
-        });  
+        });
     };
-    
+
     this.writeText = function(ctx,bb,text){
-        
+
         var TL,TR,BL,BR;
-        
+
         if (bb.length == 8){
             //bb has 8 points, we want to find TL,TR,BL,BR
             //1st. sort points by Y
@@ -320,9 +320,9 @@ var ClassVisualization = function(){
             textWidth = metrics.width;
         }
         ctx.fillText(text,this.original_to_zoom_val(parseInt(BL.x)) + 3 , this.original_to_zoom_val_y(parseInt(BL.y)) + fontSize);
-  
+
     };
-    
+
 };
 
 ClassVisualization.prototype.load_visualization = function(){
@@ -333,17 +333,17 @@ ClassVisualization.prototype.load_visualization = function(){
         if (parameterValue!= undefined){
             urlGtImg += "&" + extraParmasNames[i] + "=" + parameterValue;
         }
-    }    
+    }
     $("#div_sample").append("<img src='" + urlGtImg + "'>");
     for (var key in visualization.sampleData){
         $("#div_sample").append("<br>" + key + " = " + visualization.sampleData[key]);
     }
     //web.tancar_pantalla_espera();
-    
+
 };
 
 ClassVisualization.prototype.draw = function(){
-    
+
 };
 
 var visualization = new ClassVisualization();
