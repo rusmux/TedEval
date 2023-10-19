@@ -11,15 +11,15 @@ import web
         <link rel='stylesheet' href='{{ url('static', path='style.css') }}' />
     </head>
     <body>
-        
+
         % submitId, methodTitle, submitDate, methodResultJson = subm_data
-        
+
         <h1><a href="http://rrc.cvc.uab.es/" target="_blank"><img id='logo' src='/static/CVC.png'></a>{{title}}</h1>
-        
+
         <div class='breadcrumbs'>
             <a href='/'>Methods</a> > {{methodTitle}}
-        </div>        
-        
+        </div>
+
         % result = json.loads(results.read('method.json'))
         % if result==None:
             <h2>Submit your method</h2>
@@ -39,7 +39,7 @@ import web
                         value = str(round(colValue*100,2))
                     else:
                         value = colValue
-                    end        
+                    end
                 %>
                     <p>{{v['long_name']}}: <strong>{{value}}</strong></p>
                 % end
@@ -55,9 +55,9 @@ import web
                 <a class="pure-button button-secondary" href='?m={{submitId}}&p={{page+1}}'>next ></a>
             % end
             </div>
-            
+
             <div class="samples_list">
-            <%  
+            <%
                 for index, name in enumerate(images[(page-1)*20:page*20]):
                     sampleId = web.image_name_to_id(name)
                     values = json.loads(results.read( sampleId + '.json'))
@@ -75,16 +75,16 @@ import web
                                 value = str(round(colValue*100,2))
                             else:
                                 value = colValue
-                            end        
+                            end
                             %>
                             <p>{{v['long_name']}}: <strong>{{value}}</strong></p>
-                        % end                        
+                        % end
                     </div>
             <%
                 end
                 results.close()
             %>
             </div>
-        % end        
+        % end
     </body>
 </html>

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <title>{{title}}</title>        
+        <title>{{title}}</title>
         <meta charset="utf-8" />
         <script type="text/javascript" src="{{ url('static', path='jquery-1.8.2.min.js') }}" charset="utf-8"></script>
         <script type="text/javascript" src="{{ url('static', path='jquery-ui.min.js') }}" charset="utf-8"></script>
@@ -11,24 +11,24 @@
         <link rel='stylesheet' href='{{ url('static', path='style.css') }}' />
         <link rel='stylesheet' href='{{ url('static', path='jquery-ui.min.css') }}' />
         <link rel='stylesheet' href='{{ url('static', path='visualization.css') }}' />
-        
+
         <script type="text/javascript" src="{{ url('static_custom', path='visualization_TL_iou.js') }}" charset="utf-8"></script>
         <link rel='stylesheet' href='{{ url('static_custom', path='visualization_TL_iou.css') }}' />
-        
+
     </head>
     <body>
-        
+
         <h1><a href="http://rrc.cvc.uab.es/" target="_blank"><img id='logo' src='/static/CVC.png'></a>{{title}}</h1>
-        
+
         % submitId, methodTitle, submitDate, methodResultJson = subm_data
         % import math
         % page = 1
         % if int(sample)>1:
-            %page = (0 if sample % 20 == 0 else 1) + int(math.ceil(sample/20))  
+            %page = (0 if sample % 20 == 0 else 1) + int(math.ceil(sample/20))
         % end
-        
+
         <div class="breadcrumbs">
-            <a href='/'>Methods</a> > 
+            <a href='/'>Methods</a> >
             <a href="/method/?m={{submitId}}&p={{page}}" style='margin-right: 40px;'>{{methodTitle}}</a>
 
             % if int(sample)>1:
@@ -39,14 +39,14 @@
 
             % if int(sample) < int(num_samples):
                 <a class="pure-button button-secondary" href="/sample/?m={{submitId}}&sample={{int(sample)+1}}">next ></a>
-            % end        
+            % end
         </div>
-        
+
         <div id='div_comparation'>
             <table class='sample_methods'>
                 <thead>
                     <th>Method</th>
-                    <% 
+                    <%
                     num_column = -1
                     num_column_order = -1
                     for k,v in sample_params.items():
@@ -69,7 +69,7 @@
                         end
                         samplesData.append(sampleData)
                     end
-                    samplesData = sorted(samplesData, key=lambda sample: sample[num_column_order],reverse=sort_order=="desc")                    
+                    samplesData = sorted(samplesData, key=lambda sample: sample[num_column_order],reverse=sort_order=="desc")
                     for row in samplesData:
                         methodClass = "current" if row[0]==submitId else "other"
                     %>
@@ -84,7 +84,7 @@
                                         value = str(round(colValue*100,2))
                                     else:
                                         value = colValue
-                                    end                                 
+                                    end
                                     index = index+1
                             %>
                                     <td>{{value}}</td>
@@ -94,8 +94,8 @@
                     </tbody>
             </table>
         </div>
-        
+
         <div id='div_sample'></div>
-        
+
     </body>
 </html>
