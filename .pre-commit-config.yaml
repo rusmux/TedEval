@@ -1,0 +1,135 @@
+repos:
+
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+      - id: check-yaml
+      - id: check-toml
+      - id: check-json
+      - id: check-docstring-first
+      - id: check-case-conflict
+      - id: check-merge-conflict
+      - id: check-added-large-files
+        args: [ "--maxkb=5120" ]
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: pretty-format-json
+        args: [ "--autofix", "--no-ensure-ascii" ]
+        exclude_types:
+          - jupyter
+
+      - id: detect-aws-credentials
+        args: [ "--allow-missing-credentials" ]
+      - id: detect-private-key
+
+  - repo: https://github.com/gruntwork-io/pre-commit
+    rev: v0.1.22
+    hooks:
+      - id: shellcheck
+        name: shellcheck
+      - id: helmlint
+      - id: sentinel-fmt
+        name: sentinel-fmt
+
+  - repo: https://github.com/executablebooks/mdformat
+    rev: 0.7.17
+    hooks:
+      - id: mdformat
+        name: format markdown
+        additional_dependencies:
+          - mdformat-gfm
+          - mdformat-black
+
+  - repo: https://github.com/hadolint/hadolint
+    rev: v2.12.1-beta
+    hooks:
+      - id: hadolint
+        args: [ "--failure-threshold=error" ]
+
+  - repo: https://github.com/asottile/pyupgrade
+    rev: v3.15.0
+    hooks:
+      - id: pyupgrade
+        args: [ --py38-plus ]
+
+  - repo: https://github.com/psf/black
+    rev: 23.9.1
+    hooks:
+      - id: black
+
+  - repo: https://github.com/asottile/add-trailing-comma
+    rev: v3.1.0
+    hooks:
+      - id: add-trailing-comma
+
+  - repo: https://github.com/pycqa/isort
+    rev: 5.12.0
+    hooks:
+      - id: isort
+
+  - repo: https://github.com/jendrikseipp/vulture
+    rev: 'v2.10'
+    hooks:
+      - id: vulture
+        args: [ ".", "--min-confidence=70" ]
+
+  - repo: https://github.com/kynan/nbstripout
+    rev: 0.6.1
+    hooks:
+      - id: nbstripout
+
+  - repo: local
+    hooks:
+      - id: update-requirements
+        name: update requirements
+        entry: make requirements
+        language: system
+        files: pyproject.toml|poetry.lock
+        pass_filenames: false
+
+      - id: yesqa
+        name: yesqa
+        entry: yesqa
+        language: system
+        types: [ python ]
+
+      - id: flake8
+        name: flake8
+        entry: flake8
+        language: system
+        types: [ python ]
+
+      - id: mypy
+        name: mypy
+        entry: mypy --install-types --non-interactive .
+        args: [ "--scripts-are-modules" ]
+        pass_filenames: false
+        language: system
+        types: [ python ]
+
+      - id: nbqa
+        name: nbqa
+        entry: make format_notebooks
+        pass_filenames: false
+        language: system
+        types: [ jupyter ]
+
+      - id: pytest
+        name: pytest
+        entry: pytest -s
+        pass_filenames: false
+        language: system
+        types: [ python ]
+        stages: [ push ]
+
+      - id: clean
+        name: clean
+        entry: make clean
+        pass_filenames: false
+        language: system
+        stages: [ push ]
+
+  - repo: https://github.com/commitizen-tools/commitizen
+    rev: 3.10.0
+    hooks:
+      - id: commitizen
