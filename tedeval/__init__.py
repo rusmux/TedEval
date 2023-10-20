@@ -1,2 +1,2 @@
-from tedeval.evaluate_fiftyone import evaluate_text_detections_fiftyone
-from tedeval.evaluate_zip import evaluate_text_detections_zip
+from tedeval.evaluate_fiftyone import evaluate_fiftyone_text_detections
+from tedeval.evaluate_zip import evaluate_zip_text_detections

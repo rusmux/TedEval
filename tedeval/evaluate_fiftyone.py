@@ -1,18 +1,20 @@
 import io
+import typing as tp
 import zipfile
 
 import fiftyone as fo
 
-from tedeval.evaluate_zip import evaluate_text_detections_zip
+from tedeval.config import EVALUATION_PARAMS
+from tedeval.evaluate_zip import evaluate_zip_text_detections
 
 
-def polyline_to_points(
+def polyline_to_points(  # noqa: WPS210
     polyline: fo.Polyline,
     image_width: int,
     image_height: int,
 ) -> tuple[int, int, int, int, int, int, int, int]:
     if len(polyline["points"][0]) == 4:
-        (x1, y1), (x2, y2), (x3, y3), (x4, y4) = polyline["points"][0]
+        (x1, y1), (x2, y2), (x3, y3), (x4, y4) = polyline["points"][0]  # noqa: WPS221
     else:
         detection = polyline.to_detection()
         x_min, y_min, width, height = detection["bounding_box"]
@@ -23,13 +25,13 @@ def polyline_to_points(
             (x_min, y_min + height),
         )
 
-    x1, x2, x3, x4 = map(lambda x: int(round(x * image_width)), [x1, x2, x3, x4])
-    y1, y2, y3, y4 = map(lambda y: int(round(y * image_height)), [y1, y2, y3, y4])
+    x1, x2, x3, x4 = (int(round(x_coord * image_width)) for x_coord in [x1, x2, x3, x4])  # noqa: WPS221
+    y1, y2, y3, y4 = (int(round(y_coord * image_height)) for y_coord in [y1, y2, y3, y4])  # noqa: WPS221
 
-    return x1, y1, x2, y2, x3, y3, x4, y4
+    return x1, y1, x2, y2, x3, y3, x4, y4  # noqa: WPS227
 
 
-def create_tedeval_labels(
+def create_tedeval_labels(  # noqa: WPS210
     dataset: fo.Dataset,
     pred_field: str,
     gt_field: str,
@@ -37,7 +39,7 @@ def create_tedeval_labels(
     ground_truth_zip_buffer = io.BytesIO()
     prediction_zip_buffer = io.BytesIO()
 
-    for idx, sample in enumerate(dataset.iter_samples(progress=True)):
+    for sample in dataset.iter_samples(progress=True):
         image_height = sample["metadata"]["height"]
         image_width = sample["metadata"]["width"]
 
@@ -48,9 +50,13 @@ def create_tedeval_labels(
         with zipfile.ZipFile(ground_truth_zip_buffer, "a") as ground_truth_zip:
             ground_truth_label = ""
             for polyline in ground_truth_field["polylines"]:
-                x1, y1, x2, y2, x3, y3, x4, y4 = polyline_to_points(polyline, image_width, image_height)
-                ground_truth_label += f"{x1},{y1},{x2},{y2},{x3},{y3},{x4},{y4},{polyline['label']}\n"
-            ground_truth_zip.writestr(f"{idx}.txt", ground_truth_label)
+                x1, y1, x2, y2, x3, y3, x4, y4 = polyline_to_points(  # noqa: WPS236
+                    polyline,
+                    image_width,
+                    image_height,
+                )
+                ground_truth_label += f"{x1},{y1},{x2},{y2},{x3},{y3},{x4},{y4},{polyline['label']}\n"  # noqa: WPS221
+            ground_truth_zip.writestr(f"{sample.filepath}.txt", ground_truth_label)
 
         prediction_field = sample[pred_field]
         if isinstance(prediction_field, fo.Detections):
@@ -59,20 +65,18 @@ def create_tedeval_labels(
         with zipfile.ZipFile(prediction_zip_buffer, "a") as prediction_zip:
             prediction_label = ""
             for polyline in prediction_field["polylines"]:
-                x1, y1, x2, y2, x3, y3, x4, y4 = polyline_to_points(polyline, image_width, image_height)
-                prediction_label += f"{x1},{y1},{x2},{y2},{x3},{y3},{x4},{y4}\n"
-            prediction_zip.writestr(f"{idx}.txt", prediction_label)
+                x1, y1, x2, y2, x3, y3, x4, y4 = polyline_to_points(polyline, image_width, image_height)  # noqa: WPS236
+                prediction_label += f"{x1},{y1},{x2},{y2},{x3},{y3},{x4},{y4}\n"  # noqa: WPS221
+            prediction_zip.writestr(f"{sample.filepath}.txt", prediction_label)
 
     return ground_truth_zip_buffer, prediction_zip_buffer
 
 
-def evaluate_text_detections_fiftyone(
+def evaluate_fiftyone_text_detections(
     dataset: fo.Dataset,
     pred_field: str,
     gt_field: str,
-) -> None:
+    evaluation_params: dict = EVALUATION_PARAMS,
+) -> tp.Dict[str, dict]:
     ground_truth_zip_buffer, prediction_zip_buffer = create_tedeval_labels(dataset, pred_field, gt_field)
-
-    tedeval_results = evaluate_text_detections_zip(ground_truth_zip_buffer, prediction_zip_buffer, {})
-
-    print(tedeval_results)
+    return evaluate_zip_text_detections(ground_truth_zip_buffer, prediction_zip_buffer, evaluation_params)

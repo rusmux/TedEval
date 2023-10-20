@@ -7,6 +7,11 @@ TedEval | [paper](https://arxiv.org/abs/1907.01227) | [slides](https://docs.goog
 
 Clova AI Research, NAVER Corp.
 
+## TODO
+
+- Update documentation
+- Fix `tedeval/web.py`. Now it uses old `main_evaluation` functions.
+
 ### Overview
 
 We propose a new evaluation metric for scene text detectors called TedEval. Through separate instance-level matching
@@ -42,7 +47,7 @@ Text (IC13) and ICDAR 2015 Incidental Scene Text (IC15). Detectors are listed in
 ### ICDAR 2013
 
 |                        Detector                         | Date (YY/MM/DD) | Recall (%) | Precision (%) | H-mean (%) |
-| :-----------------------------------------------------: | :-------------: | :--------: | :-----------: | :--------: |
+|:-------------------------------------------------------:|:---------------:|:----------:|:-------------:|:----------:|
 |      [CTPN](https://arxiv.org/pdf/1609.03605.pdf)       |    16/09/12     |    82.1    |     92.7      |    87.6    |
 |      [RRPN](https://arxiv.org/pdf/1703.01086.pdf)       |    17/03/03     |    89.0    |     94.2      |    91.6    |
 |     [SegLink](https://arxiv.org/pdf/1703.06520.pdf)     |    17/03/19     |    65.6    |     74.9      |    70.0    |
@@ -58,7 +63,7 @@ Text (IC13) and ICDAR 2015 Incidental Scene Text (IC15). Detectors are listed in
 ### ICDAR 2015
 
 |                        Detector                         | Date (YY/MM/DD) | Recall (%) | Precision (%) | H-mean (%) |
-| :-----------------------------------------------------: | :-------------: | :--------: | :-----------: | :--------: |
+|:-------------------------------------------------------:|:---------------:|:----------:|:-------------:|:----------:|
 |      [CTPN](https://arxiv.org/pdf/1609.03605.pdf)       |    16/09/12     |    85.0    |     81.1      |    67.8    |
 |      [RRPN](https://arxiv.org/pdf/1703.01086.pdf)       |    17/03/03     |    79.5    |     85.9      |    82.6    |
 |     [SegLink](https://arxiv.org/pdf/1703.06520.pdf)     |    17/03/19     |    77.1    |     83.9      |    80.6    |
@@ -147,7 +152,7 @@ For evaluation setup, please refer to the following parameter list to edit `defa
 | -o | ```string``` | | path to save per-sample result file 'results.zip' | -->
 
 | name                      | type      | default | description                                                   |
-| ------------------------- | --------- | ------- | ------------------------------------------------------------- |
+|---------------------------|-----------|---------|---------------------------------------------------------------|
 | AREA_RECALL_CONSTRAINT    | `float`   | `0.4`   | area recall constraint (0 \<= R \<= 1)                        |
 | AREA_PRECISION_CONSTRAINT | `float`   | `0.4`   | area precision constraint (0 \<= P \<= 1)                     |
 | GT_LTRB                   | `boolean` | `False` | GT file annotation type (True if LTRB, False if QUAD)         |

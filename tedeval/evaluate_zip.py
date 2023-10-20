@@ -1,8 +1,11 @@
+import typing as tp
 from collections import namedtuple
 from collections.abc import Sequence
+from pathlib import Path
 
 import numpy as np
 
+from tedeval.config import EVALUATION_PARAMS
 from tedeval.utils.points import (
     center_distance,
     compute_ap,
@@ -17,27 +20,12 @@ from tedeval.utils.points import (
 )
 from tedeval.utils.zip import decode_utf8, get_tl_line_values_from_file_contents, load_zip_file
 
-EVALUATION_PARAMS = {
-    "AREA_RECALL_CONSTRAINT": 0.4,
-    "AREA_PRECISION_CONSTRAINT": 0.4,
-    "EV_PARAM_IND_CENTER_DIFF_THR": 1,
-    "GT_SAMPLE_NAME_2_ID": ".*([0-9]+).*",
-    "DET_SAMPLE_NAME_2_ID": ".*([0-9]+).*",
-    "GT_LTRB": False,  # LTRB: 2 points (left, top, right, bottom) or 4 points(x1,y1,x2,y2,x3,y3,x4,y4)
-    "GT_CRLF": False,  # Lines are delimited by Windows CRLF format
-    "DET_LTRB": False,  # LTRB: 2 points (left, top, right, bottom) or 4 points(x1,y1,x2,y2,x3,y3,x4,y4)
-    "DET_CRLF": False,  # Lines are delimited by Windows CRLF format
-    "CONFIDENCES": False,  # Detections must include confidence value. AP will be calculated.
-    "TRANSCRIPTION": False,  # Does prediction have transcription or not
-    "PER_SAMPLE_RESULTS": True,  # Generate per sample results and produce data for visualization
-}
 
-
-def evaluate_text_detections_zip(
-    ground_truth_file_path,
-    predictions_file_path,
-    evaluation_params=EVALUATION_PARAMS,
-):
+def evaluate_zip_text_detections(
+    ground_truth_file: tp.Union[Path, tp.IO[bytes]],
+    predictions_file: tp.Union[Path, tp.IO[bytes]],
+    evaluation_params: dict = EVALUATION_PARAMS,
+) -> tp.Dict[str, dict]:
     def char_fill(det_nums: Sequence[int], match_mat: np.ndarray) -> None:
         for det_num in det_nums:
             det_pol = det_pols[det_num]
@@ -70,10 +58,7 @@ def evaluate_text_detections_zip(
                 and precision_mat[i, col] >= evaluation_params["AREA_PRECISION_CONSTRAINT"]
             ):
                 cont += 1
-        if cont != 1:
-            return False
-
-        return True
+        return cont == 1
 
     def one_to_many_match(gt_num: int) -> tuple[bool, list[int]]:
         many_sum = 0
@@ -142,8 +127,8 @@ def evaluate_text_detections_zip(
 
     Rectangle = namedtuple("Rectangle", "xmin ymin xmax ymax")
 
-    gt = load_zip_file(ground_truth_file_path)
-    subm = load_zip_file(predictions_file_path, True)
+    gt = load_zip_file(ground_truth_file)
+    subm = load_zip_file(predictions_file, True)
 
     num_global_care_gt = 0
     num_global_care_det = 0
@@ -484,6 +469,6 @@ def evaluate_text_detections_zip(
         else 2 * method_recall * method_precision / (method_recall + method_precision)
     )
 
-    method_metrics = {"recall": method_recall, "precision": method_precision, "hmean": method_hmean, "AP": AP}
+    total_metrics = {"recall": method_recall, "precision": method_precision, "hmean": method_hmean, "AP": AP}
 
-    return {"calculated": True, "Message": "", "method": method_metrics, "per_sample": per_sample_metrics}
+    return {"total_metrics": total_metrics, "per_sample_metrics": per_sample_metrics}

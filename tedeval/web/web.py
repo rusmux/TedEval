@@ -10,7 +10,7 @@ from io import BytesIO
 from bottle import TEMPLATE_PATH, HTTPResponse, redirect, request, route, run, static_file, template, url
 from PIL import Image
 
-from tedeval.config import (
+from tedeval.web.config import (
     acronym,
     customCSS,
     customJS,
@@ -30,12 +30,7 @@ TEMPLATE_PATH.insert(
 
 
 def image_name_to_id(name):
-    return (
-        name.replace(".jpg", "")
-        .replace(".png", "")
-        .replace(".gif", "")
-        .replace(".bmp", "")
-    )
+    return name.replace(".jpg", "").replace(".png", "").replace(".gif", "").replace(".bmp", "")
 
 
 def get_sample_id_from_num(num):
@@ -132,7 +127,7 @@ def index():
 
 
 @route("/exit")
-def exit():
+def exit() -> None:
     sys.stderr.close()
 
 
@@ -350,11 +345,7 @@ def gt_video():
 
 @route("/subm_image/", methods=["GET"])
 def subm_image():
-    submFilePath = (
-        f"{os.path.dirname(os.path.abspath(__file__))}/output/subm_"
-        + str(request.query["m"])
-        + ".zip"
-    )
+    submFilePath = f"{os.path.dirname(os.path.abspath(__file__))}/output/subm_" + str(request.query["m"]) + ".zip"
     archive = zipfile.ZipFile(submFilePath, "r")
     fileName = request.query["sample"]
     ext = fileName.split(".")[-1]
@@ -375,11 +366,7 @@ def subm_image():
 
 @route("/subm_xml/", methods=["GET"])
 def subm_xml():
-    submFilePath = (
-        f"{os.path.dirname(os.path.abspath(__file__))}/output/subm_"
-        + str(request.query["m"])
-        + ".zip"
-    )
+    submFilePath = f"{os.path.dirname(os.path.abspath(__file__))}/output/subm_" + str(request.query["m"]) + ".zip"
     archive = zipfile.ZipFile(submFilePath, "r")
     fileName = request.query["sample"]
     header = "text/xml"
@@ -393,11 +380,7 @@ def subm_xml():
 
 @route("/result_image/", methods=["GET"])
 def result_image():
-    submFilePath = (
-        f"{os.path.dirname(os.path.abspath(__file__))}/output/results_"
-        + str(request.query["m"])
-        + ".zip"
-    )
+    submFilePath = f"{os.path.dirname(os.path.abspath(__file__))}/output/results_" + str(request.query["m"]) + ".zip"
     archive = zipfile.ZipFile(submFilePath, "r")
     fileName = request.query["name"]
     ext = fileName.split(".")[-1]
@@ -418,11 +401,7 @@ def result_image():
 
 @route("/result_xml/", methods=["GET"])
 def result_xml():
-    submFilePath = (
-        f"{os.path.dirname(os.path.abspath(__file__))}/output/results_"
-        + str(request.query["m"])
-        + ".zip"
-    )
+    submFilePath = f"{os.path.dirname(os.path.abspath(__file__))}/output/results_" + str(request.query["m"]) + ".zip"
     archive = zipfile.ZipFile(submFilePath, "r")
     fileName = request.query["name"]
     header = "text/xml"
@@ -521,7 +500,7 @@ def evaluate():
 
 
 @route("/delete_all", method="POST")
-def delete_all():
+def delete_all() -> None:
     output_folder = f"{os.path.dirname(os.path.abspath(__file__))}/output"
     try:
         for root, dirs, files in os.walk(output_folder, topdown=False):
@@ -534,13 +513,11 @@ def delete_all():
 
 
 @route("/delete_method", method="POST")
-def delete_method():
-    id = request.forms.get("id")
+def delete_method() -> None:
+    idx = request.forms.get("idx")
 
     try:
-        output_folder = (
-            f"{os.path.dirname(os.path.abspath(__file__))}/output/results_{id}"
-        )
+        output_folder = f"{os.path.dirname(os.path.abspath(__file__))}/output/results_{idx}"
         if os.path.isdir(output_folder):
             for root, dirs, files in os.walk(output_folder, topdown=False):
                 for f in files:
@@ -548,8 +525,8 @@ def delete_method():
                 for d in dirs:
                     os.rmdir(os.path.join(root, d))
             os.rmdir(output_folder)
-        subm_file = f"{os.path.dirname(os.path.abspath(__file__))}/output/results_{id}.{gt_ext}"
-        results_file = f"{os.path.dirname(os.path.abspath(__file__))}/output/subm_{id}.zip"
+        subm_file = f"{os.path.dirname(os.path.abspath(__file__))}/output/results_{idx}.{gt_ext}"
+        results_file = f"{os.path.dirname(os.path.abspath(__file__))}/output/subm_{idx}.zip"
         os.remove(subm_file)
         os.remove(results_file)
     except Exception:
@@ -558,13 +535,13 @@ def delete_method():
     dbPath = f"{os.path.dirname(os.path.abspath(__file__))}/output/submits"
     conn = sqlite3.connect(dbPath)
     cursor = conn.cursor()
-    cursor.execute("DELETE FROM submission WHERE id=?", (id))
+    cursor.execute("DELETE FROM submission WHERE idx=?", (idx))
     conn.commit()
     conn.close()
 
 
 @route("/edit_method", method="POST")
-def edit_method():
+def edit_method() -> None:
     id = request.forms.get("id")
     name = request.forms.get("name")
 
