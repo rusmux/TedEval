@@ -9,7 +9,8 @@ Clova AI Research, NAVER Corp.
 
 ## TODO
 
-- Update documentation
+- Update documentation to include refactoring changes and FiftyOne integration
+- Fix flake8 and mypy errors
 - Fix `tedeval/web.py`. Now it uses old `main_evaluation` functions.
 
 ### Overview
