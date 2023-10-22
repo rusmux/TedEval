@@ -36,6 +36,7 @@ def create_tedeval_labels(  # noqa: WPS210
     dataset: fo.Dataset,
     pred_field: str,
     gt_field: str,
+    verbose: bool = True,
 ) -> tuple[io.BytesIO, io.BytesIO, bool, bool]:
     ground_truth_zip_buffer = io.BytesIO()
     prediction_zip_buffer = io.BytesIO()
@@ -43,8 +44,9 @@ def create_tedeval_labels(  # noqa: WPS210
     has_transcription = False
     has_confidence = False
 
-    rich_console.print("Creating TedEval labels:")
-    for sample in dataset.iter_samples(progress=True):
+    if verbose:
+        rich_console.print("Creating TedEval labels:")
+    for sample in dataset.iter_samples(progress=verbose):
         image_height = sample["metadata"]["height"]
         image_width = sample["metadata"]["width"]
 
@@ -92,9 +94,13 @@ def evaluate_fiftyone_text_detections(
     pred_field: str,
     gt_field: str,
     evaluation_params: dict = EVALUATION_PARAMS,
+    verbose: bool = True,
 ) -> tp.Dict[str, dict]:
     ground_truth_zip_buffer, prediction_zip_buffer, has_transcription, has_confidence = create_tedeval_labels(
-        dataset, pred_field, gt_field,
+        dataset,
+        pred_field,
+        gt_field,
+        verbose,
     )
     evaluation_params["CONFIDENCES"] = has_confidence
     evaluation_params["TRANSCRIPTION"] = has_transcription
