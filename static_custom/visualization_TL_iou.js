@@ -115,7 +115,7 @@ ClassVisualization.prototype.load_visualization = function(){
             html_recall += "<td style='" + (gtDontCare? "" : "font-weight:bold;") + "'>#" + j + "</td>";
             for ( var i=0;i<numDet;i++){
 
-                var recallClass = (sampleData.recallMat[j][i]>=sampleData.evaluationParams.AREA_RECALL_CONSTRAINT ? ' green' : ' red' );
+                var recallClass = (sampleData.recallMat[j][i]>=sampleData.evaluationParams.RECALL_IOU_THRESHOLD ? ' green' : ' red' );
                 html_recall += "<td data-col='" + i + "' data-row='" + j + "' class='" + stylesMat[j][i] + " " + recallClass + "'>" + Math.round(sampleData.recallMat[j][i]*10000)/100 + "</td>";
             }
             html_recall += "</tr>";
@@ -140,7 +140,7 @@ ClassVisualization.prototype.load_visualization = function(){
             html_precision += "<td style='" + (gtDontCare? "" : "font-weight:bold;") + "'>#" + j + "</td>";
             for ( var i=0;i<numDet;i++){
 
-                var precisionClass = (sampleData.precisionMat[j][i]>=sampleData.evaluationParams.AREA_PRECISION_CONSTRAINT ? ' green' : ' red' );
+                var precisionClass = (sampleData.precisionMat[j][i]>=sampleData.evaluationParams.PRECISION_IOU_THRESHOLD ? ' green' : ' red' );
                 html_precision += "<td data-col='" + i + "' data-row='" + j + "' class='" + stylesMat[j][i] + " " + precisionClass + "'>" + Math.round(sampleData.precisionMat[j][i]*10000)/100 + "</td>";
             }
             html_precision += "</tr>";

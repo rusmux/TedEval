@@ -154,8 +154,8 @@ For evaluation setup, please refer to the following parameter list to edit `defa
 
 | name                      | type      | default | description                                                   |
 |---------------------------|-----------|---------|---------------------------------------------------------------|
-| AREA_RECALL_CONSTRAINT    | `float`   | `0.4`   | area recall constraint (0 \<= R \<= 1)                        |
-| AREA_PRECISION_CONSTRAINT | `float`   | `0.4`   | area precision constraint (0 \<= P \<= 1)                     |
+| RECALL_IOU_THRESHOLD    | `float`   | `0.4`   | area recall constraint (0 \<= R \<= 1)                        |
+| PRECISION_IOU_THRESHOLD | `float`   | `0.4`   | area precision constraint (0 \<= P \<= 1)                     |
 | GT_LTRB                   | `boolean` | `False` | GT file annotation type (True if LTRB, False if QUAD)         |
 | DET_LTRB                  | `boolean` | `False` | prediction file annotation type (True if LTRB, False if QUAD) |
 | TRANSCRIPTION             | `boolean` | `False` | set True if result file has transcription                     |

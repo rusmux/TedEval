@@ -37,16 +37,16 @@ def evaluate_zip_text_detections(
 
     def one_to_one_match(row: int, col: int) -> bool:
         if not (
-            recall_mat[row, col] >= evaluation_params["AREA_RECALL_CONSTRAINT"]
-            and precision_mat[row, col] >= evaluation_params["AREA_PRECISION_CONSTRAINT"]
+            recall_mat[row, col] >= evaluation_params["RECALL_IOU_THRESHOLD"]
+            and precision_mat[row, col] >= evaluation_params["PRECISION_IOU_THRESHOLD"]
         ):
             return False
 
         cont = 0
         for j in range(len(recall_mat[0])):
             if (
-                recall_mat[row, j] >= evaluation_params["AREA_RECALL_CONSTRAINT"]
-                and precision_mat[row, j] >= evaluation_params["AREA_PRECISION_CONSTRAINT"]
+                recall_mat[row, j] >= evaluation_params["RECALL_IOU_THRESHOLD"]
+                and precision_mat[row, j] >= evaluation_params["PRECISION_IOU_THRESHOLD"]
             ):
                 cont += 1
         if cont != 1:
@@ -54,8 +54,8 @@ def evaluate_zip_text_detections(
         cont = 0
         for i in range(len(recall_mat)):
             if (
-                recall_mat[i, col] >= evaluation_params["AREA_RECALL_CONSTRAINT"]
-                and precision_mat[i, col] >= evaluation_params["AREA_PRECISION_CONSTRAINT"]
+                recall_mat[i, col] >= evaluation_params["RECALL_IOU_THRESHOLD"]
+                and precision_mat[i, col] >= evaluation_params["PRECISION_IOU_THRESHOLD"]
             ):
                 cont += 1
         return cont == 1
@@ -68,11 +68,11 @@ def evaluate_zip_text_detections(
                 det_num not in det_dont_care_pols_num
                 and gt_exclude_mat[gt_num] == 0
                 and det_exclude_mat[det_num] == 0
-                and precision_mat[gt_num, det_num] >= evaluation_params["AREA_PRECISION_CONSTRAINT"]
+                and precision_mat[gt_num, det_num] >= evaluation_params["PRECISION_IOU_THRESHOLD"]
             ):
                 many_sum += recall_mat[gt_num, det_num]
                 det_rects.append(det_num)
-        if many_sum >= evaluation_params["AREA_RECALL_CONSTRAINT"] and len(det_rects) >= 2:
+        if many_sum >= evaluation_params["RECALL_IOU_THRESHOLD"] and len(det_rects) >= 2:
             pivots = []
             for matchDet in det_rects:
                 pD = polygon_from_points(det_pol_points[matchDet])
@@ -98,11 +98,11 @@ def evaluate_zip_text_detections(
                 gt_num not in gt_dont_care_pols_num
                 and gt_exclude_mat[gt_num] == 0
                 and det_exclude_mat[det_num] == 0
-                and recall_mat[gt_num, det_num] >= evaluation_params["AREA_RECALL_CONSTRAINT"]
+                and recall_mat[gt_num, det_num] >= evaluation_params["RECALL_IOU_THRESHOLD"]
             ):
                 many_sum += precision_mat[gt_num, det_num]
                 gt_rects.append(gt_num)
-        if many_sum >= evaluation_params["AREA_PRECISION_CONSTRAINT"] and len(gt_rects) >= 2:
+        if many_sum >= evaluation_params["PRECISION_IOU_THRESHOLD"] and len(gt_rects) >= 2:
             pivots = []
             for matchGt in gt_rects:
                 pG = gt_pols[matchGt]
@@ -277,13 +277,13 @@ def evaluate_zip_text_detections(
                         # many-to-one
                         many_sum = 0
                         for gtNum in gt_dont_care_pols_num:
-                            if recall_mat[gtNum, detNum] > evaluation_params["AREA_RECALL_CONSTRAINT"]:
+                            if recall_mat[gtNum, detNum] > evaluation_params["RECALL_IOU_THRESHOLD"]:
                                 many_sum += precision_mat[gtNum, detNum]
-                        if many_sum >= evaluation_params["AREA_PRECISION_CONSTRAINT"]:
+                        if many_sum >= evaluation_params["PRECISION_IOU_THRESHOLD"]:
                             det_dont_care_pols_num.append(detNum)
                         else:
                             for gtNum in gt_dont_care_pols_num:
-                                if precision_mat[gtNum, detNum] > evaluation_params["AREA_PRECISION_CONSTRAINT"]:
+                                if precision_mat[gtNum, detNum] > evaluation_params["PRECISION_IOU_THRESHOLD"]:
                                     det_dont_care_pols_num.append(detNum)
                                     break
                         # many-to-one for mixed DC and non-DC
