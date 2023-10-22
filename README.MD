@@ -48,7 +48,7 @@ Text (IC13) and ICDAR 2015 Incidental Scene Text (IC15). Detectors are listed in
 ### ICDAR 2013
 
 |                        Detector                         | Date (YY/MM/DD) | Recall (%) | Precision (%) | H-mean (%) |
-|:-------------------------------------------------------:|:---------------:|:----------:|:-------------:|:----------:|
+| :-----------------------------------------------------: | :-------------: | :--------: | :-----------: | :--------: |
 |      [CTPN](https://arxiv.org/pdf/1609.03605.pdf)       |    16/09/12     |    82.1    |     92.7      |    87.6    |
 |      [RRPN](https://arxiv.org/pdf/1703.01086.pdf)       |    17/03/03     |    89.0    |     94.2      |    91.6    |
 |     [SegLink](https://arxiv.org/pdf/1703.06520.pdf)     |    17/03/19     |    65.6    |     74.9      |    70.0    |
@@ -64,7 +64,7 @@ Text (IC13) and ICDAR 2015 Incidental Scene Text (IC15). Detectors are listed in
 ### ICDAR 2015
 
 |                        Detector                         | Date (YY/MM/DD) | Recall (%) | Precision (%) | H-mean (%) |
-|:-------------------------------------------------------:|:---------------:|:----------:|:-------------:|:----------:|
+| :-----------------------------------------------------: | :-------------: | :--------: | :-----------: | :--------: |
 |      [CTPN](https://arxiv.org/pdf/1609.03605.pdf)       |    16/09/12     |    85.0    |     81.1      |    67.8    |
 |      [RRPN](https://arxiv.org/pdf/1703.01086.pdf)       |    17/03/03     |    79.5    |     85.9      |    82.6    |
 |     [SegLink](https://arxiv.org/pdf/1703.06520.pdf)     |    17/03/19     |    77.1    |     83.9      |    80.6    |
@@ -152,14 +152,14 @@ For evaluation setup, please refer to the following parameter list to edit `defa
 | -s | ```string``` | | path to result zip file |
 | -o | ```string``` | | path to save per-sample result file 'results.zip' | -->
 
-| name                      | type      | default | description                                                   |
-|---------------------------|-----------|---------|---------------------------------------------------------------|
+| name                    | type      | default | description                                                   |
+| ----------------------- | --------- | ------- | ------------------------------------------------------------- |
 | RECALL_IOU_THRESHOLD    | `float`   | `0.4`   | area recall constraint (0 \<= R \<= 1)                        |
 | PRECISION_IOU_THRESHOLD | `float`   | `0.4`   | area precision constraint (0 \<= P \<= 1)                     |
-| GT_LTRB                   | `boolean` | `False` | GT file annotation type (True if LTRB, False if QUAD)         |
-| DET_LTRB                  | `boolean` | `False` | prediction file annotation type (True if LTRB, False if QUAD) |
-| TRANSCRIPTION             | `boolean` | `False` | set True if result file has transcription                     |
-| CONFIDENCES               | `boolean` | `False` | set True if result file has confidence                        |
+| GT_LTRB                 | `boolean` | `False` | GT file annotation type (True if LTRB, False if QUAD)         |
+| DET_LTRB                | `boolean` | `False` | prediction file annotation type (True if LTRB, False if QUAD) |
+| TRANSCRIPTION           | `boolean` | `False` | set True if result file has transcription                     |
+| CONFIDENCES             | `boolean` | `False` | set True if result file has confidence                        |
 
 ### Run Visualizer
 

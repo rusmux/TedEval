@@ -11,4 +11,5 @@ EVALUATION_PARAMS = {
     "CONFIDENCES": False,  # Detections must include confidence value. AP will be calculated.
     "TRANSCRIPTION": False,  # Does prediction have transcription or not
     "PER_SAMPLE_RESULTS": True,  # Generate per sample results and produce data for visualization
+    "F_BETA": 1,
 }

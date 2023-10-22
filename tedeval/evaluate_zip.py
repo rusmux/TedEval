@@ -408,7 +408,8 @@ def evaluate_zip_text_detections(
             if evaluation_params["CONFIDENCES"] and evaluation_params["PER_SAMPLE_RESULTS"]:
                 sample_ap = compute_ap(arr_sample_confidences, arr_sample_match, num_gt_care)
 
-        hmean = 0 if (precision + recall) == 0 else 2.0 * precision * recall / (precision + recall)
+        f_beta_squared = evaluation_params["F_BETA"] ** 2
+        f_score = (1 + f_beta_squared) * precision * recall / (f_beta_squared * precision + recall + 1e-6)
 
         evaluation_log += (
             "<b>Recall = "
@@ -438,7 +439,7 @@ def evaluate_zip_text_detections(
             per_sample_metrics[res_file] = {
                 "precision": precision,
                 "recall": recall,
-                "hmean": hmean,
+                "f_score": f_score,
                 "pairs": pairs,
                 "AP": sample_ap,
                 "recall_mat": [] if len(det_pols) > 100 else recall_mat.tolist(),
@@ -461,14 +462,13 @@ def evaluate_zip_text_detections(
     if evaluation_params["CONFIDENCES"]:
         AP = compute_ap(arr_global_confidences, arr_global_matches, num_global_care_gt)
 
-    method_recall = 0 if num_global_care_gt == 0 else method_recall_sum / num_global_care_gt
-    method_precision = 0 if num_global_care_det == 0 else method_precision_sum / num_global_care_det
-    method_hmean = (
-        0
-        if method_recall + method_precision == 0
-        else 2 * method_recall * method_precision / (method_recall + method_precision)
-    )
+    method_recall = 0 if not num_global_care_gt else method_recall_sum / num_global_care_gt
+    method_precision = 0 if not num_global_care_det else method_precision_sum / num_global_care_det
 
-    total_metrics = {"recall": method_recall, "precision": method_precision, "hmean": method_hmean, "AP": AP}
+    f_beta_squared = evaluation_params["F_BETA"] ** 2
+    method_f_score = (1 + f_beta_squared) * method_precision * method_recall
+    method_f_score /= f_beta_squared * method_precision + method_recall + 1e-6
+
+    total_metrics = {"recall": method_recall, "precision": method_precision, "f_score": method_f_score, "AP": AP}
 
     return {"total_metrics": total_metrics, "per_sample_metrics": per_sample_metrics}
