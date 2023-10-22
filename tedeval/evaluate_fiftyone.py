@@ -3,7 +3,6 @@ import typing as tp
 import zipfile
 
 import fiftyone as fo
-
 from tedeval.config import EVALUATION_PARAMS
 from tedeval.evaluate_zip import evaluate_zip_text_detections
 
@@ -35,9 +34,12 @@ def create_tedeval_labels(  # noqa: WPS210
     dataset: fo.Dataset,
     pred_field: str,
     gt_field: str,
-) -> tuple[io.BytesIO, io.BytesIO]:
+) -> tuple[io.BytesIO, io.BytesIO, bool, bool]:
     ground_truth_zip_buffer = io.BytesIO()
     prediction_zip_buffer = io.BytesIO()
+
+    has_transcription = False
+    has_confidence = False
 
     for sample in dataset.iter_samples(progress=True):
         image_height = sample["metadata"]["height"]
@@ -55,7 +57,10 @@ def create_tedeval_labels(  # noqa: WPS210
                     image_width,
                     image_height,
                 )
-                ground_truth_label += f"{x1},{y1},{x2},{y2},{x3},{y3},{x4},{y4},{polyline['label']}\n"  # noqa: WPS221
+                ground_truth_label += f"{x1},{y1},{x2},{y2},{x3},{y3},{x4},{y4}"  # noqa: WPS221
+                if polyline["label"]:
+                    ground_truth_label += f",{polyline['label']}"
+                ground_truth_label += "\n"
             ground_truth_zip.writestr(f"{sample.filepath}.txt", ground_truth_label)
 
         prediction_field = sample[pred_field]
@@ -66,10 +71,17 @@ def create_tedeval_labels(  # noqa: WPS210
             prediction_label = ""
             for polyline in prediction_field["polylines"]:
                 x1, y1, x2, y2, x3, y3, x4, y4 = polyline_to_points(polyline, image_width, image_height)  # noqa: WPS236
-                prediction_label += f"{x1},{y1},{x2},{y2},{x3},{y3},{x4},{y4}\n"  # noqa: WPS221
+                prediction_label += f"{x1},{y1},{x2},{y2},{x3},{y3},{x4},{y4}"  # noqa: WPS221
+                if polyline["confidence"]:
+                    prediction_label += f",{polyline['confidence']}"
+                    has_confidence = True
+                if polyline["label"]:
+                    prediction_label += f",{polyline['label']}"
+                    has_transcription = True
+                prediction_label += "\n"
             prediction_zip.writestr(f"{sample.filepath}.txt", prediction_label)
 
-    return ground_truth_zip_buffer, prediction_zip_buffer
+    return ground_truth_zip_buffer, prediction_zip_buffer, has_transcription, has_confidence
 
 
 def evaluate_fiftyone_text_detections(
@@ -78,5 +90,9 @@ def evaluate_fiftyone_text_detections(
     gt_field: str,
     evaluation_params: dict = EVALUATION_PARAMS,
 ) -> tp.Dict[str, dict]:
-    ground_truth_zip_buffer, prediction_zip_buffer = create_tedeval_labels(dataset, pred_field, gt_field)
+    ground_truth_zip_buffer, prediction_zip_buffer, has_transcription, has_confidence = create_tedeval_labels(dataset,
+                                                                                                              pred_field,
+                                                                                                              gt_field)
+    evaluation_params["CONFIDENCES"] = has_confidence
+    evaluation_params["TRANSCRIPTION"] = has_transcription
     return evaluate_zip_text_detections(ground_truth_zip_buffer, prediction_zip_buffer, evaluation_params)
