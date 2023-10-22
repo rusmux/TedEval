@@ -16,7 +16,7 @@ def load_zip_file(file, all_entries=False):
         if add_file:
             pairs.append([keyName, archive.read(name)])
         elif all_entries:
-            raise Exception(f"ZIP entry not valid: {name}")
+            raise ValueError(f"ZIP entry not valid: {name}")
 
     return dict(pairs)
 
@@ -50,31 +50,31 @@ def get_tl_line_values(line, LTRB=True, with_transcription=False, with_confidenc
                     r"^\s*(-?[0-9]+)\s*,\s*(-?[0-9]+)\s*,\s*([0-9]+)\s*,\s*([0-9]+)\s*,\s*([0-1].?[0-9]*)\s*,(.*)$",
                     line,
                 )
-                raise Exception("Format incorrect. Should be: x_min,y_min,x_max,y_max,confidence,transcription")
+                raise ValueError(f'line format must be: "x_min,y_min,x_max,y_max,confidence,transcription", got {line}')
         elif with_confidence:
             m = re.match(
                 r"^\s*(-?[0-9]+)\s*,\s*(-?[0-9]+)\s*,\s*([0-9]+)\s*,\s*([0-9]+)\s*,\s*([0-1].?[0-9]*)\s*$",
                 line,
             )
             if m is None:
-                raise Exception("Format incorrect. Should be: x_min,y_min,x_max,y_max,confidence")
+                raise ValueError(f'line format must be: "x_min,y_min,x_max,y_max,confidence", got {line}')
         elif with_transcription:
             m = re.match(r"^\s*(-?[0-9]+)\s*,\s*(-?[0-9]+)\s*,\s*([0-9]+)\s*,\s*([0-9]+)\s*,(.*)$", line)
             if m is None:
-                raise Exception("Format is incorrect. Should be: x_min,y_min,x_max,y_max,transcription")
+                raise ValueError(f'line format must be: "x_min,y_min,x_max,y_max,transcription", got {line}')
         else:
             m = re.match(r"^\s*(-?[0-9]+)\s*,\s*(-?[0-9]+)\s*,\s*([0-9]+)\s*,\s*([0-9]+)\s*,?\s*$", line)
             if m is None:
-                raise Exception("Format is incorrect. Should be: x_min,y_min,x_max,y_max")
+                raise ValueError(f'line format must be: "x_min,y_min,x_max,y_max", got {line}')
 
         x_min = int(m.group(1))
         y_min = int(m.group(2))
         x_max = int(m.group(3))
         y_max = int(m.group(4))
         if x_max < x_min:
-            raise Exception(f"Xmax value ({x_max}) not valid (Xmax < Xmin).")
+            raise ValueError(f"x_max ({x_max}) must be greater or equal to x_min ({x_min})")
         if y_max < y_min:
-            raise Exception(f"Ymax value ({y_max})  not valid (Ymax < Ymin).")
+            raise ValueError(f"y_max ({y_max}) must be greater or equal to y_min ({y_min})")
 
         points = [float(m.group(i)) for i in range(1, (num_points + 1))]
 
@@ -91,21 +91,21 @@ def get_tl_line_values(line, LTRB=True, with_transcription=False, with_confidenc
                 line,
             )
             if m is None:
-                raise Exception("Format incorrect. Should be: x1,y1,x2,y2,x3,y3,x4,y4,confidence,transcription")
+                raise ValueError(f'line format must be: "x1,y1,x2,y2,x3,y3,x4,y4,confidence,transcription", got {line}')
         elif with_confidence:
             m = re.match(
                 r"^\s*(-?[0-9]+)\s*,\s*(-?[0-9]+)\s*,\s*(-?[0-9]+)\s*,\s*(-?[0-9]+)\s*,\s*(-?[0-9]+)\s*,\s*(-?[0-9]+)\s*,\s*(-?[0-9]+)\s*,\s*(-?[0-9]+)\s*,\s*([0-1].?[0-9]*)\s*$",
                 line,
             )
             if m is None:
-                raise Exception("Format incorrect. Should be: x1,y1,x2,y2,x3,y3,x4,y4,confidence")
+                raise ValueError(f'line format must be: "x1,y1,x2,y2,x3,y3,x4,y4,confidence", got {line}')
         elif with_transcription:
             m = re.match(
                 r"^\s*(-?[0-9]+)\s*,\s*(-?[0-9]+)\s*,\s*(-?[0-9]+)\s*,\s*(-?[0-9]+)\s*,\s*(-?[0-9]+)\s*,\s*(-?[0-9]+)\s*,\s*(-?[0-9]+)\s*,\s*(-?[0-9]+)\s*,(.*)$",
                 line,
             )
             if m is None:
-                raise Exception("Format incorrect. Should be: x1,y1,x2,y2,x3,y3,x4,y4,transcription")
+                raise ValueError(f'line format must be: "x1,y1,x2,y2,x3,y3,x4,y4,transcription", got {line}')
         else:
             if line[-1] == ",":
                 line = line[:-1]
@@ -114,7 +114,7 @@ def get_tl_line_values(line, LTRB=True, with_transcription=False, with_confidenc
                 line,
             )
             if m is None:
-                raise Exception("Format incorrect. Should be: x1,y1,x2,y2,x3,y3,x4,y4")
+                raise ValueError(f'line format must be: "x1,y1,x2,y2,x3,y3,x4,y4", got {line}')
 
         points = [float(m.group(i)) for i in range(1, (num_points + 1))]
 
@@ -127,10 +127,7 @@ def get_tl_line_values(line, LTRB=True, with_transcription=False, with_confidenc
             validate_point_inside_bounds(points[6], points[7], im_width, im_height)
 
     if with_confidence:
-        try:
-            confidence = float(m.group(num_points + 1))
-        except ValueError as e:
-            raise Exception("Confidence value must be a float") from e
+        confidence = float(m.group(num_points + 1))
 
     if with_transcription:
         pos_transcription = num_points + (2 if with_confidence else 1)
@@ -144,11 +141,9 @@ def get_tl_line_values(line, LTRB=True, with_transcription=False, with_confidenc
 
 def validate_point_inside_bounds(x, y, im_width, im_height):
     if x < 0 or x > im_width:
-        raise Exception(f"X value ({x}) not valid. Image dimensions: ({im_width},{im_height})")
+        raise ValueError(f"x value ({x}) is not valid. Image dimensions: ({im_width},{im_height})")
     if y < 0 or y > im_height:
-        raise Exception(
-            "Y value ({})  not valid. Image dimensions: ({},{}) Sample: {} Line:{}".format(y, im_width, im_height),
-        )
+        raise ValueError(f"y value ({y})  not valid. Image dimensions: ({im_width},{im_height})")
 
 
 def validate_clockwise_points(points):
@@ -157,7 +152,7 @@ def validate_clockwise_points(points):
     """
 
     if len(points) != 8:
-        raise Exception(f"Points list not valid.{len(points)}")
+        raise ValueError(f"points length must be 8, got {len(points)}")
 
     point = [
         [int(points[0]), int(points[1])],
@@ -174,8 +169,11 @@ def validate_clockwise_points(points):
 
     summatory = edge[0] + edge[1] + edge[2] + edge[3]
     if summatory > 0:
-        raise Exception(
-            "Points are not clockwise. The coordinates of bounding quadrilaterals have to be given in clockwise order. Regarding the correct interpretation of 'clockwise' remember that the image coordinate system used is the standard one, with the image origin at the upper left, the X axis extending to the right and Y axis extending downwards.",
+        raise ValueError(
+            "points are not ordered clockwise. The coordinates of bounding quadrilaterals have to be given in "
+            "clockwise order. Regarding the correct interpretation of 'clockwise' remember that the image coordinate "
+            "system used is the standard one, with the image origin at the upper left, the X axis extending to the "
+            "right and Y axis extending downwards.",
         )
 
 

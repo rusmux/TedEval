@@ -97,7 +97,7 @@ def get_angle_3pt(a, b, c):
 def gt_box_to_chars(num, points):
     chars = []
     if len(points) != 8:
-        raise Exception("Points must be 8")
+        raise ValueError(f"points length must be 8, got {len(points)}")
     p1 = get_midpoints([points[0], points[1]], [points[6], points[7]])
     p2 = get_midpoints([points[2], points[3]], [points[4], points[5]])
     x_unit = (p2[0] - p1[0]) / num
