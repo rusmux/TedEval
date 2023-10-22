@@ -3,8 +3,10 @@ import typing as tp
 import zipfile
 
 import fiftyone as fo
+
 from tedeval.config import EVALUATION_PARAMS
 from tedeval.evaluate_zip import evaluate_zip_text_detections
+from tedeval.logging import rich_console
 
 
 def polyline_to_points(  # noqa: WPS210
@@ -41,6 +43,7 @@ def create_tedeval_labels(  # noqa: WPS210
     has_transcription = False
     has_confidence = False
 
+    rich_console.print("Creating TedEval labels:")
     for sample in dataset.iter_samples(progress=True):
         image_height = sample["metadata"]["height"]
         image_width = sample["metadata"]["width"]
@@ -90,9 +93,9 @@ def evaluate_fiftyone_text_detections(
     gt_field: str,
     evaluation_params: dict = EVALUATION_PARAMS,
 ) -> tp.Dict[str, dict]:
-    ground_truth_zip_buffer, prediction_zip_buffer, has_transcription, has_confidence = create_tedeval_labels(dataset,
-                                                                                                              pred_field,
-                                                                                                              gt_field)
+    ground_truth_zip_buffer, prediction_zip_buffer, has_transcription, has_confidence = create_tedeval_labels(
+        dataset, pred_field, gt_field,
+    )
     evaluation_params["CONFIDENCES"] = has_confidence
     evaluation_params["TRANSCRIPTION"] = has_transcription
     return evaluate_zip_text_detections(ground_truth_zip_buffer, prediction_zip_buffer, evaluation_params)
